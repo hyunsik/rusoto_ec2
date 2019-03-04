@@ -16,14 +16,7 @@ homepage = "https://www.rusoto.org/"
 futures = "0.1.16"
 serde_urlencoded = "0.5"
 xml-rs = "0.7"
-
-[dependencies.rusoto_core]
-version = "0.36.0"
-path = "../../core"
-default-features = false
-[dev-dependencies.rusoto_mock]
-version = "0.30.0"
-path = "../../../mock"
+rusoto_core = "0.36.0"
 
 [features]
 default = ["native-tls"]
