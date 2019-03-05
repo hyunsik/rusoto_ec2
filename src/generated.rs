@@ -91494,6 +91494,7 @@ impl Ec2 for Ec2Client {
         ));
         println!("after request.set_payload");
         request.set_content_type("application/x-www-form-urlencoded".to_owned());
+        println!("after request.set_content_type");
 
         self.client.sign_and_dispatch(request, |response| {
             println!("enter sign_and_dispatch");
