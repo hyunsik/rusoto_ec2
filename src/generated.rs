@@ -91481,18 +91481,22 @@ impl Ec2 for Ec2Client {
         &self,
         input: RequestSpotFleetRequest,
     ) -> RusotoFuture<RequestSpotFleetResponse, RequestSpotFleetError> {
+        println!("Enter request_spot_fleet");
         let mut request = SignedRequest::new("POST", "ec2", &self.region, "/");
         let mut params = Params::new();
 
         params.put("Action", "RequestSpotFleet");
         params.put("Version", "2016-11-15");
         RequestSpotFleetRequestSerializer::serialize(&mut params, "", &input);
+        println!("after RequestSpotFleetRequestSerializer::serialize");
         request.set_payload(Some(
             serde_urlencoded::to_string(&params).unwrap().into_bytes(),
         ));
+        println!("after request.set_payload");
         request.set_content_type("application/x-www-form-urlencoded".to_owned());
 
         self.client.sign_and_dispatch(request, |response| {
+            println!("enter sign_and_dispatch");
             if !response.status.is_success() {
                 return Box::new(
                     response
@@ -91501,24 +91505,31 @@ impl Ec2 for Ec2Client {
                         .and_then(|response| Err(RequestSpotFleetError::from_response(response))),
                 );
             }
+            println!("response.status.is_success() is true");
+
 
             Box::new(response.buffer().from_err().and_then(move |response| {
+                println!("enter closer of response.buffer()");
                 let result;
 
                 if response.body.is_empty() {
                     result = RequestSpotFleetResponse::default();
                 } else {
+                    println!("response.body.is_empty() is not true");
                     let reader = EventReader::new_with_config(
                         response.body.as_slice(),
                         ParserConfig::new().trim_whitespace(true),
                     );
+                    println!("after EventReader::new_with_config");
                     let mut stack = XmlResponse::new(reader.into_iter().peekable());
                     let _start_document = stack.next();
                     let actual_tag_name = try!(peek_at_name(&mut stack));
+                    println!("after peek_at_name()");
                     result = try!(RequestSpotFleetResponseDeserializer::deserialize(
                         &actual_tag_name,
                         &mut stack
                     ));
+                    println!("after RequestSpotFleetResponseDeserializer::deserialize()");
                 }
 
                 Ok(result)
